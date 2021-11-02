@@ -97,7 +97,7 @@ def index():
         values_usd = values_usd)
 
 @app.route("/quote", methods=["GET", "POST"])
-@login_required
+# @login_required
 def quote():
     """Get stock quote."""
     symbol = request.form.get("symbol")
