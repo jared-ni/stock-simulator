@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -33,57 +33,11 @@ app.jinja_env.filters["usd"] = usd
 connection = sqlite3.connect(r"/app/finance.db", check_same_thread=False)
 db = connection.cursor()
 
-session["user_id"] = 0
-session["username"] = ""
-
 def format_server_time():
   server_time = time.localtime()
   return time.strftime("%I:%M:%S %p", server_time)
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    """Log user in"""
 
-    # Forget any user_id
-    session.clear()
-
-    # User reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            return apology("must provide username", 403)
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            return apology("must provide password", 403)
-        # Query database for username
-        db.execute("SELECT * FROM users WHERE username = :username", {"username": request.form.get("username")})
-        # Save into a dictionary
-        user_key = ["id", "username", "hash", "cash"]
-        user_value = list(db.fetchone())
-        if not user_value:
-            return apology("account doesn't exist")
-        user = {}
-        for i in range(len(user_key)):
-            user[user_key[i]] = user_value[i]
-        # Ensure username exists and password is correct
-        if not check_password_hash(user["hash"], request.form.get("password")):
-            return apology("invalid username and/or password", 403)
-        # Remember which user has logged in
-        session["user_id"] = user["id"]
-        session["username"] = user["username"]
-        # Redirect user to home page
-        return redirect("/")
-    else:
-        return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    """Log user out"""
-    # Forget any user_id
-    session.clear()
-    # Redirect user to login form
-    return redirect("/")
-  
 @app.route('/')
 def index():
     """Show portfolio of stocks"""
@@ -143,10 +97,8 @@ def index():
         values_usd = values_usd)
 
 @app.route("/quote", methods=["GET", "POST"])
-# @login_required
+@login_required
 def quote():
-    if session.get("user_id") is None:
-        return redirect("/login")
     """Get stock quote."""
     symbol = request.form.get("symbol")
     if request.method == 'POST':
@@ -161,10 +113,8 @@ def quote():
     return render_template("quote.html")
 
 @app.route("/buy", methods=["GET", "POST"])
-# @login_required
+@login_required
 def buy():
-    if session.get("user_id") is None:
-        return redirect("/login")
     """Buy shares of stock"""
     if request.method == 'POST':
         #set shares as shares and symbol and symbol
@@ -222,10 +172,8 @@ def buy():
     return render_template("buy.html")
 
 @app.route("/sell", methods=["GET", "POST"])
-# @login_required
+@login_required
 def sell():
-    if session.get("user_id") is None:
-        return redirect("/login")
     """Sell shares of stock"""
     if request.method == 'POST':
         #set shares as shares and symbol and symbol
@@ -320,11 +268,53 @@ def register():
         return success()
     return render_template("register.html")
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Log user in"""
+
+    # Forget any user_id
+    session.clear()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username", 403)
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password", 403)
+        # Query database for username
+        db.execute("SELECT * FROM users WHERE username = :username", {"username": request.form.get("username")})
+        # Save into a dictionary
+        user_key = ["id", "username", "hash", "cash"]
+        user_value = list(db.fetchone())
+        if not user_value:
+            return apology("account doesn't exist")
+        user = {}
+        for i in range(len(user_key)):
+            user[user_key[i]] = user_value[i]
+        # Ensure username exists and password is correct
+        if not check_password_hash(user["hash"], request.form.get("password")):
+            return apology("invalid username and/or password", 403)
+        # Remember which user has logged in
+        session["user_id"] = user["id"]
+        session["username"] = user["username"]
+        # Redirect user to home page
+        return redirect("/")
+    else:
+        return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+    # Forget any user_id
+    session.clear()
+    # Redirect user to login form
+    return redirect("/")
+
 @app.route("/history")
-# @login_required
+@login_required
 def history():
-    if session.get("user_id") is None:
-        return redirect("/login")
     """Show history of transactions"""
     #username
     username = session["username"]
