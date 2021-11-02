@@ -158,8 +158,10 @@ def quote():
     return render_template("quote.html")
 
 @app.route("/buy", methods=["GET", "POST"])
-@login_required
+# @login_required
 def buy():
+    if session["user_id"] is None:
+        return redirect("/login")
     """Buy shares of stock"""
     if request.method == 'POST':
         #set shares as shares and symbol and symbol
@@ -217,8 +219,10 @@ def buy():
     return render_template("buy.html")
 
 @app.route("/sell", methods=["GET", "POST"])
-@login_required
+# @login_required
 def sell():
+    if session["user_id"] is None:
+        return redirect("/login")
     """Sell shares of stock"""
     if request.method == 'POST':
         #set shares as shares and symbol and symbol
@@ -314,8 +318,10 @@ def register():
     return render_template("register.html")
 
 @app.route("/history")
-@login_required
+# @login_required
 def history():
+    if session["user_id"] is None:
+        return redirect("/login")
     """Show history of transactions"""
     #username
     username = session["username"]
