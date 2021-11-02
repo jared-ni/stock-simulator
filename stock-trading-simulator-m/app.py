@@ -33,6 +33,9 @@ app.jinja_env.filters["usd"] = usd
 connection = sqlite3.connect(r"/app/finance.db", check_same_thread=False)
 db = connection.cursor()
 
+session["user_id"] = 0
+session["username"] = ""
+
 def format_server_time():
   server_time = time.localtime()
   return time.strftime("%I:%M:%S %p", server_time)
@@ -142,7 +145,7 @@ def index():
 @app.route("/quote", methods=["GET", "POST"])
 # @login_required
 def quote():
-    if session["user_id"] is None:
+    if session.get("user_id") is None:
         return redirect("/login")
     """Get stock quote."""
     symbol = request.form.get("symbol")
@@ -160,7 +163,7 @@ def quote():
 @app.route("/buy", methods=["GET", "POST"])
 # @login_required
 def buy():
-    if session["user_id"] is None:
+    if session.get("user_id") is None:
         return redirect("/login")
     """Buy shares of stock"""
     if request.method == 'POST':
@@ -221,7 +224,7 @@ def buy():
 @app.route("/sell", methods=["GET", "POST"])
 # @login_required
 def sell():
-    if session["user_id"] is None:
+    if session.get("user_id") is None:
         return redirect("/login")
     """Sell shares of stock"""
     if request.method == 'POST':
@@ -320,7 +323,7 @@ def register():
 @app.route("/history")
 # @login_required
 def history():
-    if session["user_id"] is None:
+    if session.get("user_id") is None:
         return redirect("/login")
     """Show history of transactions"""
     #username
