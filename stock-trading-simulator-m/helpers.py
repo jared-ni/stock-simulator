@@ -34,7 +34,7 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         # session.get("user_id")
         if session.get("user_id") is None:
-            return apology("/login")
+            return apology("please refresh")
         
         return f(*args, **kwargs)
     return decorated_function
