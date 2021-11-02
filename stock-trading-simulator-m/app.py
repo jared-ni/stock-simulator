@@ -20,6 +20,8 @@ app = Flask(__name__)
 # app.config["SESSION_FILE_DIR"] = mkdtemp()
 # app.config["SESSION_PERMANENT"] = False
 # app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = "secret_key"
+app.permanent_session_lifetime = timedelta(minutes=15)
 Session(app)
 
 # Ensure templates are auto-reloaded
@@ -64,6 +66,7 @@ def login():
         if not check_password_hash(user["hash"], request.form.get("password")):
             return apology("invalid username and/or password", 403)
         # Remember which user has logged in
+        session.permanent = True
         session["user_id"] = user_value[0]
         session["username"] = user_value[1]
         # Redirect user to home page
