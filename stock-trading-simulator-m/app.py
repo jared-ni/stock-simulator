@@ -30,7 +30,7 @@ app.jinja_env.filters["usd"] = usd
 
 # connect to sqlite3 database
 #connection = sqlite3.connect(r'C:\Users\milkt\Github-workspace\personal-projects\\financeTest\server\src\\finance.db', check_same_thread=False)
-connection = sqlite3.connect(r"app\Data\\finance.db", check_same_thread=False)
+connection = sqlite3.connect(r"/app/Data/finance.db", check_same_thread=False)
 db = connection.cursor()
 
 def format_server_time():
