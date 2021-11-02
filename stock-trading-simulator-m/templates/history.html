@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    history
+{% endblock %}
+
+{% block main %}
+    <h1 class="display-4">Welcome, {{ username }}</h1>
+    <div class="badge badge-primary text-wrap">
+      <h3 class="font-weight-light">Cash Balance: {{user_cash}}</h3>
+    </div>
+    <div class-"container" id="userBox"></div>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Transaction Time</th>
+          <th scope="col">Type</th>
+          <th scope="col">Symbol</th>
+          <th scope="col">Company Name</th>
+          <th scope="col"># of Shares</th>
+          <th scope="col">Value/Share</th>
+          <th scope="col">Total Value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      {% for transaction in transactions %}
+      <tr>
+        <th scope="row"></th>
+        <td>{{ transaction.time }}</td>
+        <td>{{ transaction.TransType }}</td>
+        <td>{{ transaction.symbol }}</td>
+        <td>{{ transaction.company }} </td>
+        <td>{{ transaction.shares }}</td>
+        <td>{{ transaction.share_price }}</td>
+        <td>{{ transaction.total_transaction }}</td>
+
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock %}
