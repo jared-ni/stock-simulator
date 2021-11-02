@@ -5,6 +5,5 @@ requests
 gunicorn
 Jinja2
 Werkzeug
-tempfile
 sqlite3
 
