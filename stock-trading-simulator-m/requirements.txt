@@ -5,5 +5,4 @@ requests
 gunicorn
 Jinja2
 Werkzeug
-sqlite3
 
