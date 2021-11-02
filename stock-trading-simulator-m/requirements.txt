@@ -3,7 +3,8 @@ Flask
 Flask-Session
 requests
 gunicorn
-Jinja
+Jinja2
 Werkzeug
 tempfile
 sqlite3
+
