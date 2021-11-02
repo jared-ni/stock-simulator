@@ -140,8 +140,10 @@ def index():
         values_usd = values_usd)
 
 @app.route("/quote", methods=["GET", "POST"])
-@login_required
+# @login_required
 def quote():
+    if session["user_id"] is None:
+        return redirect("/login")
     """Get stock quote."""
     symbol = request.form.get("symbol")
     if request.method == 'POST':
