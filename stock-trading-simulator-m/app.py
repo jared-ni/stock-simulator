@@ -288,6 +288,8 @@ def login():
         # Save into a dictionary
         user_key = ["id", "username", "hash", "cash"]
         user_value = list(db.fetchone())
+        if not user_value:
+            return apology("account doesn't exist")
         user = {}
         for i in range(len(user_key)):
             user[user_key[i]] = user_value[i]
