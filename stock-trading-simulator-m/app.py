@@ -17,11 +17,9 @@ from helpers import apology, login_required, lookup, usd, success
 app = Flask(__name__)
 
 # Configure session to use filesystem (instead of signed cookies)
-# app.config["SESSION_FILE_DIR"] = mkdtemp()
-# app.config["SESSION_PERMANENT"] = False
-# app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = "secret_key"
-app.permanent_session_lifetime = timedelta(minutes=15)
+app.config["SESSION_FILE_DIR"] = mkdtemp()
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Ensure templates are auto-reloaded
@@ -42,8 +40,10 @@ def format_server_time():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
+
     # Forget any user_id
     session.clear()
+
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Ensure username was submitted
@@ -66,14 +66,21 @@ def login():
         if not check_password_hash(user["hash"], request.form.get("password")):
             return apology("invalid username and/or password", 403)
         # Remember which user has logged in
-        session.permanent = True
-        session["user_id"] = user_value[0]
-        session["username"] = user_value[1]
+        session["user_id"] = user["id"]
+        session["username"] = user["username"]
         # Redirect user to home page
         return redirect("/")
     else:
         return render_template("login.html")
-      
+
+@app.route("/logout")
+def logout():
+    """Log user out"""
+    # Forget any user_id
+    session.clear()
+    # Redirect user to login form
+    return redirect("/")
+  
 @app.route('/')
 def index():
     """Show portfolio of stocks"""
@@ -303,14 +310,6 @@ def register():
         connection.commit()
         return success()
     return render_template("register.html")
-
-@app.route("/logout")
-def logout():
-    """Log user out"""
-    # Forget any user_id
-    session.clear()
-    # Redirect user to login form
-    return redirect("/")
 
 @app.route("/history")
 @login_required
