@@ -4,4 +4,4 @@ Hi! Welcome to the Stock Simulator Application.
 
 This is a web app that allows users to set up accounts and dynamically trade stocks using real-time data from IEX.
 
-Tools Utilized: Python, Flask, Django, SQL, CSS, and HTML.
+Tools Utilized: Python/Flask, SQLite, CSS, HTML, etc.
